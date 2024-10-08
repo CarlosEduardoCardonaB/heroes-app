@@ -5,6 +5,7 @@
   </mat-card-header>
 
   <!-- TODO: imagen -->
+   <img mat-card-image [src]="heroCard | heroImage" [alt]="heroCard.superhero">
 
   <mat-card-content class="mt-2">
     <h6>{{ heroCard.publisher }}</h6>
