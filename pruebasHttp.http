@@ -2,3 +2,6 @@ GET http://localhost:3000/users
 
 ###
 GET http://localhost:3000/heroes
+
+###
+GET http://localhost:3000/heroes?q=batman&_limit=6

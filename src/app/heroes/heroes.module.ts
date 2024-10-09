@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { HeroPageComponent } from './pages/hero-page/hero-page.component';
 import { LayoutPageComponent } from './pages/layout-page/layout-page.component';
@@ -10,6 +11,7 @@ import { HeroesRoutingModule } from './heroes-routing.module';
 import { MaterialModule } from '../material/material.module';
 import { CardComponent } from './components/card/card.component';
 import { HeroImagePipe } from './pipes/heroImage.pipe';
+
 
 
 
@@ -29,6 +31,7 @@ import { HeroImagePipe } from './pipes/heroImage.pipe';
     HeroesRoutingModule,
     MaterialModule,
     MaterialModule,
+    ReactiveFormsModule
 
   ]
 })
