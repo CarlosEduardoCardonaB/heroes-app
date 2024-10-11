@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { catchError, Observable, of } from 'rxjs';
+import { HttpClient, HttpResponse } from '@angular/common/http';
+import { catchError, map, Observable, of } from 'rxjs';
 import { Hero } from '../interfaces/hero.interface';
 import { environments } from '../../../environments/environments';
 
@@ -27,6 +27,25 @@ export class HeroesService {
 
   getSuggestion( query: string ): Observable<Hero[]>{
       return this.httpClient.get<Hero[]>(`${this.baseUrl}/heroes?q=${query}&_limit=6`);
+  }
+
+  updateHero( hero: Hero ): Observable<Hero>{
+    if(!hero.id) throw Error('Hero id is required');
+      return this.httpClient.patch<Hero>(`${this.baseUrl}/heroes/${hero.id}`, hero);
+  }
+
+  addHero( hero: Hero ): Observable<Hero>{
+     return this.httpClient.post<Hero>(`${this.baseUrl}/heroes`, hero);
+  }
+
+  delteHeroById( id: string ): Observable<boolean>{
+    return this.httpClient.delete<Hero>(`${this.baseUrl}/heroes/${id}`)
+      .pipe(
+        //Si la respuesta retorna un error con este lo homologo y lo convierto en false para dar a entender que no se eliminó nada
+        catchError( err => of(false)),
+        //Pero si por el contrario si recibo respuesta entonces seteo la respuesta en true para confirmar que si hubo eliminación
+        map( resp => true)
+      );
   }
 
 }

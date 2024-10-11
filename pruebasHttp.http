@@ -4,4 +4,13 @@ GET http://localhost:3000/users
 GET http://localhost:3000/heroes
 
 ###
-GET http://localhost:3000/heroes?q=batman&_limit=6
+GET http://localhost:3000/heroes?q=bat&_limit=6
+
+### con el patch puedo editar sin reconstruir todo con el PUT.
+### Si lanzo esta misma peticion con el PUT daño el objeto y lo reescribo solo con el "first_appearance"
+PATCH http://localhost:3000/heroes/dc-batman
+Content-Type: application/json
+
+{
+  "first_appearance": "Detective Comics #27"
+}
