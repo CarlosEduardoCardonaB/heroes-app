@@ -1,5 +1,10 @@
-<h1>Editar / Agregar héroe
-  <small>Superman</small>
+<h1>
+  {{currentHero.id ? 'Editar': 'Agregar'}}
+   héroe
+   @if (currentHero.id) {
+    <small> - {{currentHero.superhero}}</small>
+   }
+
 </h1>
 
 <mat-divider class="mb-2"></mat-divider>
@@ -68,10 +73,14 @@
           </form>
 
           <div class="flex justify-content-between">
-            <button
+            @if(currentHero.id){
+              <button
                 mat-flat-button color="warn"
 
                 >Borrar</button>
+            }
+            <span></span>
+
             <button
               mat-flat-button
               color="primary"
