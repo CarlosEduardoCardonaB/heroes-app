@@ -3,8 +3,10 @@ import { Hero, Publisher } from '../../interfaces/hero.interface';
 import { HeroesService } from '../../services/heroes.service';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { switchMap } from 'rxjs';
+import { filter, switchMap, tap } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from '../../components/confirmDialog/confirmDialog.component';
 
 @Component({
   selector: 'app-new-page',
@@ -17,7 +19,8 @@ export class NewPageComponent implements OnInit {
     private heroService: HeroesService,
     private activatedRoute: ActivatedRoute,
     private router: Router,
-    private snackbar: MatSnackBar //Este snackbar sirve para mostrar mensajes de exito cuando creamos o actualizamos un dato, y es de angular material
+    private snackbar: MatSnackBar, //Este snackbar sirve para mostrar mensajes de exito cuando creamos o actualizamos un dato, y es de angular material
+    private dialog: MatDialog
   ){}
 
   public heroForm = new FormGroup({
@@ -88,6 +91,42 @@ export class NewPageComponent implements OnInit {
 
       })
 
+  }
+
+  onDeleteHero():void{
+    if( !this.currentHero.id ) throw Error('Hero id is required');
+    //console.log('entre al delte hero');
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: this.heroForm.value,
+    });
+
+    //Este código funciona pero lo vamos a optimizar para que no quede un subscribe adentro de otro subscribe
+    // dialogRef.afterClosed().subscribe(result => {
+    //   console.log({result});
+    //   if(!result) return;
+    //   console.log('delted');
+    //   this.heroService.delteHeroById( this.currentHero.id )
+    //     .subscribe( deletedHero => {
+    //       if( deletedHero )
+    //         this.router.navigate(['/heroes']);
+    //     });
+
+    // });
+
+    dialogRef.afterClosed()
+    .pipe(
+      filter( (result: boolean) => result === true), //El filter se usa para validar y dejar seguir si la condición se cumple, en este caso se valida si la respuesta es true
+      // este filter de arriba también se puede expresar asi y es lo mismo -> filter( (result: boolean) => result) en donde valida que sea verdadera, hacer de cuenta estos valores asi !result o result
+      switchMap( () => this.heroService.delteHeroById( this.currentHero.id )),
+      tap( wasDeleted => console.log({wasDeleted})),
+      //Después de eliminar el héroe esperamos un true del servicio de delteHeroById, y si llega en true, este filter lo deja pasar
+      filter( (wasDeleted: boolean) => wasDeleted),
+    )
+    //Después de todas las validaciones anteriores se ejecutará este subscribe si y solo si se cumplen las validacioens anteriores
+    .subscribe( (result) => {
+      this.router.navigate(['/heroes']);
+      console.log({result})
+    })
   }
 
   //Este snackbar sirve para mostrar mensajes de exito cuando creamos o actualizamos un dato, y es de angular material

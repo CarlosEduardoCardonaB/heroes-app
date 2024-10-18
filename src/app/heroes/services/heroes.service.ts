@@ -41,10 +41,10 @@ export class HeroesService {
   delteHeroById( id: string ): Observable<boolean>{
     return this.httpClient.delete<Hero>(`${this.baseUrl}/heroes/${id}`)
       .pipe(
-        //Si la respuesta retorna un error con este lo homologo y lo convierto en false para dar a entender que no se eliminó nada
-        catchError( err => of(false)),
         //Pero si por el contrario si recibo respuesta entonces seteo la respuesta en true para confirmar que si hubo eliminación
-        map( resp => true)
+        map( resp => true),
+        //Si la respuesta retorna un error con este lo homologo y lo convierto en false para dar a entender que no se eliminó nada
+        catchError( err => of(false))
       );
   }
 
